@@ -23,5 +23,10 @@ pipeline{
                 
             }
         }
+        stage('build docker image'){
+            steps{
+                sh 'docker build -t kishore0420/register-app:v1 .'
+            }
+        }
     }
 }
