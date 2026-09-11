@@ -9,6 +9,11 @@ pipeline{
                 cleanWs()
             }
         }
+        stage('checkout scm'){
+            steps{
+                git branch: 'main', credentialsId: 'bb5b7dbe-5357-4961-aace-2c1e581fd7e4', url: 'git@github.com:kishore0420/register-app.git'
+            }
+        }
         stage('build'){
             steps{
                 dir('webapp'){
