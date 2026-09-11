@@ -11,7 +11,11 @@ pipeline{
         }
         stage('build'){
             steps{
-                sh 'mvn clean package'
+                dir('webapp'){
+                    sh 'mvn clean package'
+
+                }
+                
             }
         }
     }
