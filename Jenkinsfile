@@ -54,5 +54,12 @@ pipeline{
                 }
             }
         }
+        stage('trivy scan'){
+            steps{
+                script{
+                    sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL kishore0420/register-app:1.0'
+                }
+            }
+        }
     }
 }
