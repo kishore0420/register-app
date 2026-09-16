@@ -10,6 +10,7 @@ pipeline{
         IMAGE_NAME = 'register-app'
         IMAGE_TAG = "${BUILD_NUMBER}"
         ECR_IMAGE = "${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+        EKS_CLUSTER = 'register-app-cluster'
     }
     stages{
         stage('workspace clean'){
@@ -91,7 +92,8 @@ pipeline{
 
             aws eks update-kubeconfig \
                 --region ${AWS_REGION} \
-                --name ${EKS_CLUSTER}
+                --name ${EKS_CLUSTER}\
+                --kubeconfig /var/lib/jenkins/.kube/config
 
             kubectl get nodes
 
