@@ -106,6 +106,7 @@ pipeline{
 
             kubectl rollout status \
                 deployment/register-app \
+                -n register-app \
                 --timeout=5m
 
             echo "Deployment successful"
