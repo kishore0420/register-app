@@ -3,6 +3,14 @@ pipeline{
     tools{
         maven 'maven'
     }
+      environment {
+        AWS_REGION = 'us-east-1'
+        ECR_REGISTRY = '463556655164.dkr.ecr.us-east-1.amazonaws.com'
+        ECR_REPOSITORY = 'register-app'
+        IMAGE_NAME = 'register-app'
+        IMAGE_TAG = "${BUILD_NUMBER}"
+        ECR_IMAGE = "${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+    }
     stages{
         stage('workspace clean'){
             steps{
@@ -50,14 +58,14 @@ pipeline{
         stage('docker build'){
             steps{
                 script{
-                    sh 'docker build -t kishore0420/register-app:1.0 .'
+                    sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
                 }
             }
         }
         stage('trivy scan'){
             steps{
                 script{
-                    sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL kishore0420/register-app:1.0'
+                    sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL ${IMAGE_NAME}:${IMAGE_TAG}'
                 }
             }
         }
