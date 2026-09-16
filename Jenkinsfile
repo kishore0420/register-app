@@ -69,5 +69,24 @@ pipeline{
                 }
             }
         }
-    }
+        stage('ECR login'){
+            steps{
+                script{
+                    sh 'aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}'
+                }
+            }
+        }
+        stage('docker push'){
+            steps{
+                script{
+                    sh 'docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${ECR_IMAGE}'
+                    sh 'docker push ${ECR_IMAGE}'
+                }
+            }
+        }
+
+    }        
 }
+
+    
+   
