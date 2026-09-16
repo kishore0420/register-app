@@ -17,7 +17,7 @@ pipeline{
         stage('build'){
             steps{
                 dir('webapp'){
-                    sh 'mvn clean package'
+                    sh 'mvn clean package -DskipTests'
 
                 }
                 
@@ -25,7 +25,9 @@ pipeline{
         }
         stage('test'){
             steps{
-                sh 'mvn test'
+                dir('webapp'){
+                    sh 'mvn test'
+                }
             }
         }
         stage('sonarqube analysis'){
@@ -42,6 +44,13 @@ pipeline{
             steps{
                 timeout(time: 5, unit: 'MINUTES'){
                     waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+        stage('docker build'){
+            steps{
+                script{
+                    sh 'docker build -t kishore0420/register-app:1.0 .'
                 }
             }
         }
