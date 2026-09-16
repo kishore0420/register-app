@@ -23,9 +23,9 @@ pipeline{
                 
             }
         }
-        stage('build docker image'){
+        stage('test'){
             steps{
-                sh 'docker build -t kishore0420/register-app:v1 .'
+                sh 'mvn test'
             }
         }
     }
