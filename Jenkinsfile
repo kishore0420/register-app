@@ -100,7 +100,7 @@ pipeline{
             echo "Deploying image:"
             echo "${ECR_IMAGE}"
 
-            sed -i "s|ECR_IMAGE_PLACEHOLDER|${ECR_IMAGE}|g" deployment.yaml
+            sed -i "s|ECR_IMAGE_PLACEHOLDER|${ECR_IMAGE}|g" deployment.yml
 
             kubectl apply -f deployment.yml
 
