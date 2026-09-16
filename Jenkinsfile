@@ -112,10 +112,13 @@ pipeline{
             kubectl get deployment
             kubectl get pods
             kubectl get service
-        '''
-     
+            '''
+            }
 
-    }        
+        }
+        
+    }
+
 }
 
     
