@@ -84,6 +84,36 @@ pipeline{
                 }
             }
         }
+        stage('Deploy to EKS') {
+            steps {
+            sh '''
+            echo "Connecting to EKS..."
+
+            aws eks update-kubeconfig \
+                --region ${AWS_REGION} \
+                --name ${EKS_CLUSTER}
+
+            kubectl get nodes
+
+            echo "Deploying image:"
+            echo "${ECR_IMAGE}"
+
+            sed -i "s|ECR_IMAGE_PLACEHOLDER|${ECR_IMAGE}|g" \
+                deployment.yml
+
+            kubectl apply -f deployment.yml
+
+            kubectl rollout status \
+                deployment/register-app \
+                --timeout=5m
+
+            echo "Deployment successful"
+
+            kubectl get deployment
+            kubectl get pods
+            kubectl get service
+        '''
+     
 
     }        
 }
