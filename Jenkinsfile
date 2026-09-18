@@ -56,6 +56,18 @@ pipeline{
                 }
             }
         }
+        stage('Docker Local Cleanup') {
+            steps {
+            sh '''
+            echo "Removing local Docker image..."
+
+            docker rmi ${IMAGE_NAME}:${IMAGE_TAG} || true
+            docker rmi ${ECR_IMAGE} || true
+
+            docker image prune -f
+        '''
+           }
+        }
         stage('docker build'){
             steps{
                 script{
