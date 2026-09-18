@@ -110,7 +110,7 @@
 
     <div class="container">
 
-      <h1>DevOps Learning Registration</h1>
+      <h1>DevSecOps Registration with AWS</h1>
 
       <p>welcome to Virtual TechBox YouTube Channel</p>
 
