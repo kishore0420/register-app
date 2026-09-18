@@ -1,6 +1,6 @@
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <title>DevOps Registration</title>
