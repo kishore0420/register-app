@@ -139,16 +139,16 @@ pipeline{
             echo "Service:"
             kubectl get service register-app -n register-app
         '''
-                  }
-               }
-            
+                  
             }
-
+            
         }
-        
-    }
 
+    }
+        
 }
+
+
 
     
    
