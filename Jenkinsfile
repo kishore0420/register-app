@@ -89,7 +89,7 @@ pipeline{
                 }
             }
         }
-        stage('docker push'){
+        stage('docker push to ECR'){
             steps{
                 script{
                     sh 'docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${ECR_IMAGE}'
@@ -99,22 +99,29 @@ pipeline{
         }
         stage('Deploy to EKS') {
             steps {
-            sh '''
-            echo "Connecting to EKS..."
+                sh '''
+                    echo "Connecting to EKS..."
 
-            aws eks update-kubeconfig \
-                --region ${AWS_REGION} \
-                --name ${EKS_CLUSTER}\
-                --kubeconfig /var/lib/jenkins/.kube/config
+                  aws eks update-kubeconfig \
+                  --region ${AWS_REGION} \
+                  --name ${EKS_CLUSTER} \
+                  --kubeconfig /var/lib/jenkins/.kube/config
 
+            export KUBECONFIG=/var/lib/jenkins/.kube/config
+
+            echo "Checking EKS nodes..."
             kubectl get nodes
 
             echo "Deploying image:"
             echo "${ECR_IMAGE}"
 
-            sed -i "s|ECR_IMAGE_PLACEHOLDER|${ECR_IMAGE}|g" deployment.yaml
+            helm upgrade --install register-app ./helm \
+                --namespace register-app \
+                --create-namespace \
+                --set image.repository=${ECR_REGISTRY}/${ECR_REPOSITORY} \
+                --set image.tag=${IMAGE_TAG}
 
-            kubectl apply -f deployment.yaml
+            echo "Waiting for deployment..."
 
             kubectl rollout status \
                 deployment/register-app \
@@ -123,10 +130,18 @@ pipeline{
 
             echo "Deployment successful"
 
-            kubectl get deployment
-            kubectl get pods
-            kubectl get service
-            '''
+            echo "Deployment:"
+            kubectl get deployment register-app -n register-app
+
+            echo "Pods:"
+            kubectl get pods -n register-app
+
+            echo "Service:"
+            kubectl get service register-app -n register-app
+        '''
+                  }
+               }
+            
             }
 
         }
