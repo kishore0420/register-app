@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-  <title>DevOps Registration</title>
+  <title>DevSecOps Registration with AWS</title>
 
   <style>
     body {

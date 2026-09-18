@@ -108,7 +108,7 @@ pipeline{
 
                    echo "Updated Helm values:"
                    grep -A3 "^image:" helm/values.yaml
-                   '''
+                '''
            }
         }
 
