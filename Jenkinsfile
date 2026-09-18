@@ -97,51 +97,35 @@ pipeline{
                 }
             }
         }
-        stage('Deploy to EKS') {
+        stage('Update Helm Image Tag') {
+             steps {
+                 sh '''
+                   echo "Updating Helm image tag to ${IMAGE_TAG}"
+
+                   sed -i \
+                   "s/^  tag:.*/  tag: \\"${IMAGE_TAG}\\"/" \
+                   helm/values.yaml
+
+                   echo "Updated Helm values:"
+                   grep -A3 "^image:" helm/values.yaml
+                   '''
+           }
+        }
+
+        stage('Push Helm Changes to GitHub') {
             steps {
                 sh '''
-                    echo "Connecting to EKS..."
+            git config user.name "kishore0420"
+            git config user.email "kishore.king90@gmail.com"
 
-                  aws eks update-kubeconfig \
-                  --region ${AWS_REGION} \
-                  --name ${EKS_CLUSTER} \
-                  --kubeconfig /var/lib/jenkins/.kube/config
+            git add helm/values.yaml
 
-            export KUBECONFIG=/var/lib/jenkins/.kube/config
+            git commit \
+                -m "Update register-app image to ${IMAGE_TAG}" || true
 
-            echo "Checking EKS nodes..."
-            kubectl get nodes
-
-            echo "Deploying image:"
-            echo "${ECR_IMAGE}"
-
-            helm upgrade --install register-app ./helm \
-                --namespace register-app \
-                --create-namespace \
-                --set image.repository=${ECR_REGISTRY}/${ECR_REPOSITORY} \
-                --set image.tag=${IMAGE_TAG}
-
-            echo "Waiting for deployment..."
-
-            kubectl rollout status \
-                deployment/register-app \
-                -n register-app \
-                --timeout=5m
-
-            echo "Deployment successful"
-
-            echo "Deployment:"
-            kubectl get deployment register-app -n register-app
-
-            echo "Pods:"
-            kubectl get pods -n register-app
-
-            echo "Service:"
-            kubectl get service register-app -n register-app
+            git push origin main
         '''
-                  
-            }
-            
+          }
         }
 
     }

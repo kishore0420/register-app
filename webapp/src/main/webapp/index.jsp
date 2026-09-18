@@ -112,7 +112,7 @@
 
       <h1>DevOps Learning Registration</h1>
 
-      <p>Virtual TechBox YouTube Channel</p>
+      <p>welcome to Virtual TechBox YouTube Channel</p>
 
       <p>Please fill in this form to create an account.</p>
 
